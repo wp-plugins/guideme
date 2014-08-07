@@ -8,6 +8,12 @@ WebTag.Utils.extend(WebTag.Hooks, {
 			});
 			e.preventDefault();
 		});		
+		jQuery('#publish_em').click(function(e) {
+			editorInstance.savePinData(function(){
+				jQuery('#post').submit();
+			});
+			e.preventDefault();
+		});		
 	},
 	createEditBlock: function(container, isLoading, callback) {
 		// create inner drop

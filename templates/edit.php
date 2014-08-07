@@ -20,9 +20,9 @@
 		</script>
 		<?php  global $current_page_id; $current_page_id = get_the_ID();?>
 		<script data-webtag-config='{
-			"pinImageSRC": "<?php echo $this->config->pinImageSRC; ?>",
-			"pinInnerOffsetX": <?php echo $this->config->pinInnerOffsetX; ?>,
-			"pinInnerOffsetY": <?php echo $this->config->pinInnerOffsetY; ?>,
+			"pinImageSRC": "<?php echo $this->config['pinImageSRC']; ?>",
+			"pinInnerOffsetX": <?php echo $this->config['pinInnerOffsetX']; ?>,
+			"pinInnerOffsetY": <?php echo $this->config['pinInnerOffsetY']; ?>,
 			"defaultFrameSRC": "<?php echo $link; ?>"
 		}'></script>
 

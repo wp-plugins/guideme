@@ -3,12 +3,11 @@
 /*
 Plugin Name: GuideMe
 Plugin URI:
-Description: GuideMe
-Version: 1.0.0
+Description: GuideMe is a simple and easy to use plugin that allows you to create helpful tips for site admins.
+Version: 1.0.1
 Author URI:
 Text Domain: guideme
 */
-
 
 $GuideMe = new GuideMe;
 
@@ -22,13 +21,13 @@ class GuideMe {
 		add_action('init', array(&$this, 'init'));
 		include(dirname(__FILE__).'/classes/walkers.php');
 		
-		$this->config->pinInnerOffsetX = '10';
-		$this->config->pinInnerOffsetY = '24';
-		$this->config->pinImageSRC = $this->plugin_url().'/images/pin.svg';
-		$this->config->post__not_in = array();
-		$this->config->terms__not_in = array();
-		$this->config->posttype__not_in = array();
-		$this->config->taxonomy__not_in = array();
+		$this->config['pinInnerOffsetX'] = '10';
+		$this->config['pinInnerOffsetY'] = '24';
+		$this->config['pinImageSRC'] = $this->plugin_url().'/images/pin.svg';
+		$this->config['post__not_in'] = array();
+		$this->config['terms__not_in'] = array();
+		$this->config['posttype__not_in'] = array();
+		$this->config['taxonomy__not_in'] = array();
 	}
 	
 	function init() {
@@ -93,6 +92,7 @@ class GuideMe {
 	function wp_head(){
 		
 		$base_url = site_url().'/wp-admin/admin-ajax.php';
+		$link = false;
 		if( isset($_REQUEST['hideadmin'])&& $_REQUEST['gm_action'] == 'new'){
 			if(isset($_REQUEST['pgid'])){
 				$link = add_query_arg( array('gm_id' => $_REQUEST['gm_id'], 'pgid' => $_REQUEST['pgid']), $base_url.'?action=gm_markers' );
@@ -116,9 +116,9 @@ class GuideMe {
 		?>
 		<script src="<?php echo $this->plugin_url(); ?>/js/webtag.js" data-webtag-config='{
 			"dataURL":"<?php echo $link; ?>",
-			"pinImageSRC": "<?php echo $this->config->pinImageSRC; ?>",
-			"pinInnerOffsetX": <?php echo $this->config->pinInnerOffsetX; ?>,
-			"pinInnerOffsetY": <?php echo $this->config->pinInnerOffsetY; ?>
+			"pinImageSRC": "<?php echo $this->config['pinImageSRC']; ?>",
+			"pinInnerOffsetX": <?php echo $this->config['pinInnerOffsetX']; ?>,
+			"pinInnerOffsetY": <?php echo $this->config['pinInnerOffsetY']; ?>
 		}'></script>  	
 		<script src="<?php echo $this->plugin_url(); ?>/js/webtag-hooks.js"></script>
 		<link rel="stylesheet" href="<?php echo $this->plugin_url(); ?>/css/webtag.css">
@@ -256,6 +256,15 @@ class GuideMe {
 		$submit_button = '
 		<a href="#" id="publish_link" class="button button-primary button-large" >'.__('Publish').'</a>
 		<input style="display: none;" id="publish" class="button button-primary button-large" type="submit" accesskey="p" value="'.__('Publish').'" name="publish">';
+		$content = '';
+		$editor_id = 'editor_guideme';
+		$settings = array(
+			'media_buttons' =>false,
+			'textarea_rows' => 4,
+			'teeny' => 1,
+			'quicktags' => false,
+			);		
+		wp_editor( $content, $editor_id, $settings );
 		include(dirname(__FILE__).'/templates/edit.php');
 	}		
 	
@@ -387,19 +396,19 @@ class GuideMe {
 	}
 	
 	function remove_pages_from_select(){
-		return apply_filters( 'gm_remove_pages_from_select', $this->config->post__not_in );
+		return apply_filters( 'gm_remove_pages_from_select', $this->config['post__not_in'] );
 	}
 	
 	function remove_terms_from_select(){
-		return apply_filters( 'gm_remove_terms_from_select', $this->config->terms__not_in );
+		return apply_filters( 'gm_remove_terms_from_select', $this->config['terms__not_in'] );
 	}	
 	
 	function remove_posttype_from_select(){
-		return apply_filters( 'gm_remove_posttype_from_select', $this->config->posttype__not_in );
+		return apply_filters( 'gm_remove_posttype_from_select', $this->config['posttype__not_in'] );
 	}
 	
 	function remove_taxonomy_from_select(){
-		return apply_filters( 'gm_remove_taxonomy_from_select', $this->config->taxonomy__not_in );
+		return apply_filters( 'gm_remove_taxonomy_from_select', $this->config['taxonomy__not_in'] );
 	}
 	
 	function add_select_meta($content){
