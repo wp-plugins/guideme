@@ -417,7 +417,7 @@ webtagpin.inverted-position:hover [webtag-info-popup] {
 #guideme_data .data_column .pages_lists li {
   display: none;
 }
-#guideme_data .data_column .pages_lists p {
+#guideme_data .data_column .pages_lists p, #guideme_data .data_column .strong {
   margin: 0 0 4px;
   font-weight: bold;
   position: relative;

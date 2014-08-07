@@ -471,7 +471,7 @@ class GuideMe {
 			$current_object = $gm_txname;
 		}
 	?>
-			<p><?php _e('Choose post type/taxonomy', 'guideme'); ?></p>
+			<p class="strong"><?php _e('Choose post type/taxonomy', 'guideme'); ?></p>
 			<?php
 			$post_types = get_post_types(array('public' => true, 'exclude_from_search' => false));
 			$taxonomies = get_taxonomies(array('public' => true, 'show_ui' => true),'names');
