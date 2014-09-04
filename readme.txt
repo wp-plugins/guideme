@@ -1,4 +1,4 @@
-=== GuideMe ===
+﻿=== GuideMe ===
 Contributors: psd2html
 Donate link: http://psd2html.com
 Tags: pin, wordpress, admin, guide, 
@@ -12,7 +12,7 @@ Create handy tips for your admins.
 
 == Description ==
 
-GuideMe is a simple and easy to use plugin that allows you to create helpful tips for site admins.
+<a href="http://psd2html.com/guideme">GuideMe</a> is a simple and easy to use plugin that allows you to create helpful tips for site admins.
 
 You can select any post types or taxonomies to create help messages. 
 
