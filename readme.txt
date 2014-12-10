@@ -34,7 +34,7 @@ Installing the plugin is easy. Just follow these steps:
 
 == Changelog ==
 
-= 1.0 =
+= Version 1.0 =
 * Initial release
 
 == Upgrade Notice ==
@@ -42,6 +42,8 @@ Installing the plugin is easy. Just follow these steps:
 = 1.0 =
 * Initial release
 
+= Version 1.0.2 =
+* Optimized the code and fixed the choice for category for wp 4
 
 == Frequently Asked Questions ==
 There are no questions yet

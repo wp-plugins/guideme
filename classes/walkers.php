@@ -13,7 +13,7 @@ class Walker_PageDropdown_GuideMe extends Walker {
 	 * @todo Decouple this
 	 * @var array
 	 */
-	var $db_fields = array ('parent' => 'post_parent', 'id' => 'ID');
+	var $db_fields = array ( 'parent' => 'post_parent', 'id' => 'ID' );
 
 	/**
 	 * @see Walker::start_el()
@@ -26,7 +26,7 @@ class Walker_PageDropdown_GuideMe extends Walker {
 	 * @param int $id
 	 */
 	function start_el( &$output, $page, $depth = 0, $args = array(), $id = 0 ) {
-		$pad = str_repeat('&nbsp;', $depth * 3);
+		$pad = str_repeat( '&nbsp;', $depth * 3 );
 		
 		$args = array(
 			'post_type' => 'guideme',
@@ -42,20 +42,20 @@ class Walker_PageDropdown_GuideMe extends Walker {
 		$disabled = false;
 		global $current_page_id;
 		$r = new WP_Query( $args );
-		if ($r->have_posts()){
-			$current_page = get_post_meta($current_page_id, '_gm_pgid', true);
-			if($current_page == $page->ID){
-				$link = add_query_arg( array('gm_id' => $current_page_id, 'hideadmin' => 1, 'pgid' => $page->ID, 'gm_action' => 'new'), get_permalink($page->ID) );
-				$page_title = '('.__('Current', 'guideme'). ') '.$page->post_title;
+		if ( $r->have_posts() ) {
+			$current_page = get_post_meta( $current_page_id, '_gm_pgid', true );
+			if ( $current_page == $page->ID ) {
+				$link = add_query_arg( array('gm_id' => $current_page_id, 'hideadmin' => 1, 'pgid' => $page->ID, 'gm_action' => 'new' ), get_permalink( $page->ID ) );
+				$page_title = '(' . __( 'Current', 'guideme' ) . ') ' . $page->post_title;
 				$class = ' current ';
-			}else{
+			} else {
 				$link = '#';
-				$page_title = '('.__('Selected', 'guideme'). ') '.$page->post_title;
+				$page_title = '(' . __( 'Selected', 'guideme' ) . ') ' . $page->post_title;
 				$class = ' selected ';
 				$disabled = 'disabled';
 			}
-		}else{
-			$link = add_query_arg( array('gm_id' => $current_page_id, 'hideadmin' => 1, 'pgid' => $page->ID, 'gm_action' => 'new'), get_permalink($page->ID) );
+		} else {
+			$link = add_query_arg( array( 'gm_id' => $current_page_id, 'hideadmin' => 1, 'pgid' => $page->ID, 'gm_action' => 'new' ), get_permalink( $page->ID ) );
 			$page_title = $page->post_title;
 		}
 		wp_reset_postdata();
@@ -85,7 +85,7 @@ class Walker_CategoryDropdown_GuideMe extends Walker {
 	 * @todo Decouple this
 	 * @var array
 	 */
-	var $db_fields = array ('parent' => 'parent', 'id' => 'term_id');
+	var $db_fields = array ( 'parent' => 'parent', 'id' => 'term_id' );
 
 	/**
 	 * @see Walker::start_el()
@@ -97,7 +97,7 @@ class Walker_CategoryDropdown_GuideMe extends Walker {
 	 * @param array $args Uses 'selected' and 'show_count' keys, if they exist.
 	 */
 	function start_el( &$output, $category, $depth = 0, $args = array(), $id = 0 ) {
-		$pad = str_repeat('&nbsp;', $depth * 3);
+		$pad = str_repeat( '&nbsp;', $depth * 3 );
 		
 		$query_args = array(
 			'post_type' => 'guideme',
@@ -109,7 +109,7 @@ class Walker_CategoryDropdown_GuideMe extends Walker {
 				array(
 					'key' => '_gm_trslug',
 					'value' => $category->slug,
-				),					
+				),
 			),
 			'posts_per_page' => 1
 		 );
@@ -117,23 +117,23 @@ class Walker_CategoryDropdown_GuideMe extends Walker {
 		$class = false;
 		$cuurent_item = get_the_ID();
 		$r = new WP_Query( $query_args );
-		if ($r->have_posts()){
+		if ( $r->have_posts() ){
 			//while ($r->have_posts()) : $r->the_post();
-				if(get_the_ID() == $cuurent_item){
-					$cat_name = apply_filters('list_cats', '('.__('Current', 'guideme').') '.$category->name, $category);
-					$link = add_query_arg( array('gm_id' => get_the_ID(), 'hideadmin' => 1, 'trslug' => $category->slug, 'txname' => $category->taxonomy, 'gm_action' => 'new'), get_term_link( $category->name, $category->taxonomy ) );
+				if ( get_the_ID() == $cuurent_item ) {
+					$cat_name = apply_filters( 'list_cats', '(' . __('Current', 'guideme') . ') ' . $category->name, $category );
+					$link = add_query_arg( array( 'gm_id' => get_the_ID(), 'hideadmin' => 1, 'trslug' => $category->slug, 'txname' => $category->taxonomy, 'gm_action' => 'new' ), get_term_link( $category->name, $category->taxonomy ) );
 					$class = ' current ';
 					
-				}else{
-					$cat_name = apply_filters('list_cats', '('.__('Selected', 'guideme').') '.$category->name, $category);
+				} else {
+					$cat_name = apply_filters( 'list_cats', '(' . __( 'Selected', 'guideme' ) . ') ' . $category->name, $category );
 					$link = '#';
 					$class = ' selected ';
 					$disabled = 'disabled';
 				}
 			//endwhile;
-		}else{
-			$cat_name = apply_filters('list_cats', $category->name, $category);
-			$link = add_query_arg( array('gm_id' => get_the_ID(), 'hideadmin' => 1, 'trslug' => $category->slug, 'txname' => $category->taxonomy, 'gm_action' => 'new'), get_term_link( $category->name, $category->taxonomy ) );		
+		} else {
+			$cat_name = apply_filters( 'list_cats', $category->name, $category );
+			$link = add_query_arg( array( 'gm_id' => get_the_ID(), 'hideadmin' => 1, 'trslug' => $category->slug, 'txname' => $category->taxonomy, 'gm_action' => 'new' ), get_term_link( $category->name, $category->taxonomy ) );
 
 		}
 		wp_reset_postdata();
@@ -144,7 +144,7 @@ class Walker_CategoryDropdown_GuideMe extends Walker {
 		$output .= ' '.$disabled.'>';
 		$output .= $pad.$cat_name;
 		if ( $args['show_count'] )
-			$output .= '&nbsp;&nbsp;('. $category->count .')';
+			$output .= '&nbsp;&nbsp;(' . $category->count . ')';
 		$output .= "</option>\n";
 	}
 }
