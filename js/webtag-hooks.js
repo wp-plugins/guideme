@@ -40,7 +40,8 @@ WebTag.Utils.extend(WebTag.Hooks, {
 				statusbar: false,
 				plugins: 'wplink',
 				toolbar: 'bold italic | bullist numlist link',
-				selector: '#' + textarea.id
+				selector: '#' + textarea.id,
+				convert_urls:false
 			});
 		}
 

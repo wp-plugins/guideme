@@ -1,11 +1,6 @@
 @import url(http://fonts.googleapis.com/css?family=Open+Sans:400,600,700);
 
 /* reset styles */
-body {
-  font:12px 'Open Sans', Arial, Helvetica, sans-serif;
-  color:#000;
-  margin:0;
-}
 img {border-style:none;}
 
 #titlediv #title_gm {
@@ -80,9 +75,6 @@ form, fieldset {
 [data-webtag-editblock] .webtag-meta-block-title {
   color: #0074a2;
 }
-
-.webtag-edit-expanded{}
-
 [data-webtag-pinindex] {
   font-size: 10px;
   font-weight: bold;
@@ -133,7 +125,7 @@ body > [data-webtag-pin] {z-index: 10000;}
   border:0;
   background:rgba(0,0,0,0.6);
   color: #fff;
-  font-size: 12px;
+  font: 12px 'Open Sans', Arial, Helvetica, sans-serif;
   line-height: 20px;
   padding: 8px 10px;
   position: absolute;
@@ -202,11 +194,19 @@ webtagpin:hover [webtag-info-popup] {
   top: 100%;
   left: -9px;
   right: auto;
-}/*
+}
 webtagpin.inverted-position:hover [webtag-info-popup] {
   left: auto;
-  right: 100%;
-}*/
+  right:-8px;
+}
+webtagpin.inverted-position [webtag-info-popup] .webtag-info-triangle {
+  left: auto;
+  right:12px;
+}
+webtagpin.inverted-position [webtag-info-popup]:before {
+  right:0;
+  left: auto;
+}
 .webtag-btn-edit {
   position: absolute;
   cursor: pointer;
