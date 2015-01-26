@@ -6,27 +6,29 @@ WebTag = window.WebTag || {};
 /*
  * WebTag initialization (autodetect admin or preview mode)
  */
-document.addEventListener('DOMContentLoaded', function() {
-	var editorContainer = document.querySelector('[data-webtag]'),
-		webtagConfig = document.querySelector('[data-webtag-config]');
+if(document.addEventListener) {
+	document.addEventListener('DOMContentLoaded', function() {
+		var editorContainer = document.querySelector('[data-webtag]'),
+			webtagConfig = document.querySelector('[data-webtag-config]');
 
-	// get config from attribute
-	if(webtagConfig && webtagConfig.dataset) {
-		webtagConfig = JSON.parse(webtagConfig.dataset.webtagConfig);
-	} else {
-		return;
-	}
+		// get config from attribute
+		if(webtagConfig) {
+			webtagConfig = JSON.parse(webtagConfig.getAttribute('data-webtag-config'));
+		} else {
+			return;
+		}
 
-	if(editorContainer) {
-		// this script is running in admin panel
-		webtagConfig.holder = editorContainer;
-		WebTag.editorInstance = new WebTag.Editor(webtagConfig);
-	} else if(window.parent === window) {
-		// this script is running on live site
-		webtagConfig.window = window;
-		WebTag.viewerInstance = new WebTag.Viewer(webtagConfig);
-	}
-});
+		if(editorContainer) {
+			// this script is running in admin panel
+			webtagConfig.holder = editorContainer;
+			WebTag.editorInstance = new WebTag.Editor(webtagConfig);
+		} else if(window.parent === window) {
+			// this script is running on live site
+			webtagConfig.window = window;
+			WebTag.viewerInstance = new WebTag.Viewer(webtagConfig);
+		}
+	});
+}
 
 /*
  * WebTag - Admin editor module
@@ -270,7 +272,7 @@ WebTag.Viewer.prototype = {
 		// find dataURL config in page if specified
 		this.pageConfig = this.doc.querySelector('[data-webtag-config]');
 		if(this.pageConfig) {
-			this.pageConfig = JSON.parse(this.pageConfig.dataset.webtagConfig);
+			this.pageConfig = JSON.parse(this.pageConfig.getAttribute('data-webtag-config'));
 			if(this.pageConfig.dataURL) {
 				this.options.dataURL = this.pageConfig.dataURL;
 			}
@@ -298,12 +300,14 @@ WebTag.Viewer.prototype = {
 		this.resizeHandler();
 		this.win.addEventListener('resize', this.resizeHandler);
 
+		var raf = window.requestAnimationFrame || function(f) {setTimeout(f,500);};
+
 		// handle pin positions and visibility
 		if(this.options.autoRefresh) {
 			this.refreshHandler = function() {
 				if(!self.destroyed) {
 					self.repositionPins();
-					requestAnimationFrame(self.refreshHandler);
+					raf(self.refreshHandler);
 				}
 			};
 			this.refreshHandler();
@@ -935,8 +939,8 @@ WebTag.Draggable.prototype = {
 		node.setAttribute('data-webtag-highlight', '');
 	},
 	removeHighlighting: function(node) {
-		if(this.visualHightlighter) {
-			this.visualHightlighter.remove();
+		if(this.visualHightlighter && this.visualHightlighter.parentNode) {
+			this.visualHightlighter.parentNode.removeChild(this.visualHightlighter);
 		}
 		if(node) {
 			node.removeAttribute('data-webtag-highlight');
