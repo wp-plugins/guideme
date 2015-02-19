@@ -121,7 +121,7 @@ class Walker_CategoryDropdown_GuideMe extends Walker {
 			//while ($r->have_posts()) : $r->the_post();
 				if ( get_the_ID() == $cuurent_item ) {
 					$cat_name = apply_filters( 'list_cats', '(' . __('Current', 'guideme') . ') ' . $category->name, $category );
-					$link = add_query_arg( array( 'gm_id' => get_the_ID(), 'hideadmin' => 1, 'trslug' => $category->slug, 'txname' => $category->taxonomy, 'gm_action' => 'new' ), get_term_link( $category->name, $category->taxonomy ) );
+					$link = add_query_arg( array( 'gm_id' => get_the_ID(), 'hideadmin' => 1, 'trslug' => $category->slug, 'txname' => $category->taxonomy, 'gm_action' => 'new' ), get_term_link( $category->slug, $category->taxonomy ) );
 					$class = ' current ';
 					
 				} else {
@@ -133,7 +133,7 @@ class Walker_CategoryDropdown_GuideMe extends Walker {
 			//endwhile;
 		} else {
 			$cat_name = apply_filters( 'list_cats', $category->name, $category );
-			$link = add_query_arg( array( 'gm_id' => get_the_ID(), 'hideadmin' => 1, 'trslug' => $category->slug, 'txname' => $category->taxonomy, 'gm_action' => 'new' ), get_term_link( $category->name, $category->taxonomy ) );
+			$link = add_query_arg( array( 'gm_id' => get_the_ID(), 'hideadmin' => 1, 'trslug' => $category->slug, 'txname' => $category->taxonomy, 'gm_action' => 'new' ), get_term_link( $category->slug, $category->taxonomy ) );
 
 		}
 		wp_reset_postdata();

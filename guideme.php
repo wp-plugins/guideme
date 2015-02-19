@@ -3,7 +3,7 @@
 Plugin Name: GuideMe
 Plugin URI: http://www.psd2html.com/blog/introducing-guideme/
 Description: GuideMe is a simple and easy to use plugin that allows you to create helpful tips for site admins.
-Version: 1.0.4
+Version: 1.0.5
 Author URI:
 Text Domain: guideme
 */
