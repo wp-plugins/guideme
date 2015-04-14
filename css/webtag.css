@@ -1,4 +1,4 @@
-@import url(http://fonts.googleapis.com/css?family=Open+Sans:400,600,700);
+
 
 /* reset styles */
 img {border-style:none;}
@@ -125,7 +125,7 @@ body > [data-webtag-pin] {z-index: 10000;}
   border:0;
   background:rgba(0,0,0,0.6);
   color: #fff;
-  font: 12px 'Open Sans', Arial, Helvetica, sans-serif;
+  font: 12px Arial, Helvetica, sans-serif;
   line-height: 20px;
   padding: 8px 10px;
   position: absolute;
