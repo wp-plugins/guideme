@@ -1,0 +1,24 @@
+.wpfooter-banner{
+	padding: 0 20px 30px 0;
+	width: 100%;
+	box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	display: inline-block;
+	vertical-align: top;
+	position: relative;
+}
+.wpfooter-banner > a{
+	float: right;
+	max-width: 290px;
+	margin-top: -70px;
+}
+.wpfooter-banner > a img{
+	vertical-align: top;
+	max-width: 100%;
+}
+@media screen and (max-width:782px) {
+	.wpfooter-banner > a{
+		margin-top: 0;
+	}
+}
