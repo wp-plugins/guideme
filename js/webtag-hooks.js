@@ -38,7 +38,7 @@ WebTag.Utils.extend(WebTag.Hooks, {
 			tinymce.init({
 				menubar: false,
 				statusbar: false,
-				plugins: 'wplink',
+				plugins: 'wordpress,wplink',
 				toolbar: 'bold italic | bullist numlist link',
 				selector: '#' + textarea.id,
 				convert_urls:false

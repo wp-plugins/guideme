@@ -3,7 +3,7 @@
 Plugin Name: GuideMe
 Plugin URI: http://www.psd2html.com/blog/introducing-guideme/
 Description: GuideMe is a simple and easy to use plugin that allows you to create helpful tips for site admins.
-Version: 1.0.6
+Version: 1.1.0
 Author: psd2html.com
 Author URI: http://psd2html.com
 Text Domain: guideme
@@ -19,6 +19,7 @@ class GuideMe {
 		add_action( 'init', array( $this, 'post_type_init' ), 0 );
 		add_action( 'admin_menu', array( $this, 'wpautop_control_menu' ) );
 		add_action( 'init', array( &$this, 'init' ) );
+		add_action( 'admin_init', array( &$this, 'add_capability' ) );
 		include( dirname(__FILE__) . '/classes/walkers.php' );
 		
 		$this->config['pinInnerOffsetX']  = '10';
@@ -132,7 +133,7 @@ class GuideMe {
 	}
 	
 	function markers() {
-		if ( $_SERVER['REQUEST_METHOD'] == 'GET' ) {
+		if ( $_SERVER['REQUEST_METHOD'] == 'GET' && current_user_can( 'guideme_view_pins' ) ) {
 			
 			// get markers
 			if ( isset( $_REQUEST['gm_id'] ) ) {
@@ -202,79 +203,86 @@ class GuideMe {
 			die();
 		} else {
 			//save markers
-			$post_id = intval( $_REQUEST['gm_id'] );
-			$markers = $_POST['json'];
-			if ( $post_id ) {
-				update_post_meta( $post_id, '_gm_markers', $markers );
-				if ( $_REQUEST['pgid'] ) {
-					update_post_meta( $post_id, '_gm_pgid', $_REQUEST['pgid'] );
+			if( current_user_can( 'guideme_edit_pins' ) ){
+				$post_id = intval( $_REQUEST['gm_id'] );
+				$markers = $_POST['json'];
+				if ( $post_id ) {
+					update_post_meta( $post_id, '_gm_markers', $markers );
+					if ( $_REQUEST['pgid'] ) {
+						update_post_meta( $post_id, '_gm_pgid', $_REQUEST['pgid'] );
+					}
+					if ( $_REQUEST['trslug'] ) {
+						update_post_meta( $post_id, '_gm_trslug', $_REQUEST['trslug'] );
+					}
+					if ( $_REQUEST['txname'] ) {
+						update_post_meta( $post_id, '_gm_txname', $_REQUEST['txname'] );
+					}
 				}
-				if ( $_REQUEST['trslug'] ) {
-					update_post_meta( $post_id, '_gm_trslug', $_REQUEST['trslug'] );
-				}
-				if ( $_REQUEST['txname'] ) {
-					update_post_meta( $post_id, '_gm_txname', $_REQUEST['txname'] );
-				}
+				die();
 			}
-			die();
 		}
 	}	
 	
 	function export_page() {
 		include( dirname(__FILE__) . '/templates/export.php' );
-	}
+	}	
 
 	function guideme_data_box_edit() {
-		$content_post = get_post( get_the_ID() );
-		$em_pgid      = get_post_meta( $content_post->ID, '_gm_pgid', true );
-		$gm_trslug    = get_post_meta( $content_post->ID, '_gm_trslug', true );
-		$gm_txname    = get_post_meta( $content_post->ID, '_gm_txname', true );
+		if( current_user_can( 'guideme_edit_pins' ) ){
+			$content_post = get_post( get_the_ID() );
+			$em_pgid      = get_post_meta( $content_post->ID, '_gm_pgid', true );
+			$gm_trslug    = get_post_meta( $content_post->ID, '_gm_trslug', true );
+			$gm_txname    = get_post_meta( $content_post->ID, '_gm_txname', true );
+			
+			if ( $em_pgid ) {
+				$current_object = get_post_type( $em_pgid );
+			}elseif ( $gm_trslug && $gm_txname ) {
+				$current_object = $gm_txname;
+			}
+			
+			$link = $this->plugin_url() . '/images/pin.png';
+			if ( $em_pgid ) {
+				$link = get_permalink( $em_pgid );
+			}elseif ( $gm_trslug && $gm_txname ) {
+				$link = get_term_link( $gm_trslug, $gm_txname );
+			}
+			$link = add_query_arg( array( 'hideadmin' => 1, 'gm_id' => get_the_ID(), 'gm_action' => 'edit' ), $link );
+			$submit_button = '<input id="publish_em" class="button button-primary button-large" type="submit" value="' . __( 'Update' ) . '" >';
+			$content = '';
+			$editor_id = 'editor_guideme';
+			$settings = array(
+				'media_buttons' =>false,
+				'textarea_rows' => 4,
+				'teeny' => 1,
+				'quicktags' => false,
+				);
+			wp_editor( $content, $editor_id, $settings );
 		
-		if ( $em_pgid ) {
-			$current_object = get_post_type( $em_pgid );
-		}elseif ( $gm_trslug && $gm_txname ) {
-			$current_object = $gm_txname;
+			include( dirname(__FILE__) . '/templates/edit.php' );
 		}
-		
-		$link = $this->plugin_url() . '/images/pin.png';
-		if ( $em_pgid ) {
-			$link = get_permalink( $em_pgid );
-		}elseif ( $gm_trslug && $gm_txname ) {
-			$link = get_term_link( $gm_trslug, $gm_txname );
-		}
-		$link = add_query_arg( array( 'hideadmin' => 1, 'gm_id' => get_the_ID(), 'gm_action' => 'edit' ), $link );
-		$submit_button = '<input id="publish_em" class="button button-primary button-large" type="submit" value="' . __( 'Update' ) . '" >';
-		$content = '';
-		$editor_id = 'editor_guideme';
-		$settings = array(
-			'media_buttons' =>false,
-			'textarea_rows' => 4,
-			'teeny' => 1,
-			'quicktags' => false,
-			);
-		wp_editor( $content, $editor_id, $settings );
-		include( dirname(__FILE__) . '/templates/edit.php' );
 	}
 	
 	function guideme_data_box_new() {
-		$link = '';
-		$submit_button = '
-		<a href="#" id="publish_link" class="button button-primary button-large" >' . __( 'Publish' ) . '</a>
-		<input style="display: none;" id="publish" class="button button-primary button-large" type="submit" accesskey="p" value="' . __( 'Publish' ) . '" name="publish">';
-		$content = '';
-		$editor_id = 'editor_guideme';
-		$settings = array(
-			'media_buttons' =>false,
-			'textarea_rows' => 4,
-			'teeny' => 1,
-			'quicktags' => false,
-			);
-		wp_editor( $content, $editor_id, $settings );
-		include ( dirname(__FILE__) . '/templates/edit.php' );
+		if( current_user_can( 'guideme_edit_pins' ) ){
+			$link = '';
+			$submit_button = '
+			<a href="#" id="publish_link" class="button button-primary button-large" >' . __( 'Publish' ) . '</a>
+			<input style="display: none;" id="publish" class="button button-primary button-large" type="submit" accesskey="p" value="' . __( 'Publish' ) . '" name="publish">';
+			$content = '';
+			$editor_id = 'editor_guideme';
+			$settings = array(
+				'media_buttons' =>false,
+				'textarea_rows' => 4,
+				'teeny' => 1,
+				'quicktags' => false,
+				);
+			wp_editor( $content, $editor_id, $settings );
+			include ( dirname(__FILE__) . '/templates/edit.php' );
+		}
 	}
 	
 	function plugin_url() {
-		return WP_PLUGIN_URL . '/' . str_replace( '/' . basename( __FILE__), "", plugin_basename(__FILE__) );
+		return plugin_dir_url( __FILE__ );
 	}
 	
 	function guideme_meta_boxes() {
@@ -294,6 +302,22 @@ class GuideMe {
 		remove_meta_box( 'submitdiv', 'guideme', 'normal' );
 	}
 	
+	function add_capability() {
+		$role = get_role( 'administrator' );
+		$role->add_cap( 'guideme_publish_posts' );
+		$role->add_cap( 'guideme_edit_posts' );
+		$role->add_cap( 'guideme_edit_others_posts' );
+		$role->add_cap( 'guideme_delete_posts' );
+		$role->add_cap( 'guideme_delete_others_posts' );
+		$role->add_cap( 'guideme_read_private_posts' );
+		$role->add_cap( 'guideme_edit_post' );
+		$role->add_cap( 'guideme_delete_post' );
+		$role->add_cap( 'guideme_read_post' );
+		
+		$role->add_cap( 'guideme_edit_pins' );
+		$role->add_cap( 'guideme_view_pins' );
+	}	
+	
 	function post_type_init() {
 		$labels = array(
 			'name'               => _x( 'GuideMe', 'post type general name', 'guideme' ),
@@ -312,6 +336,18 @@ class GuideMe {
 			'not_found_in_trash' => __( 'No pages found in Trash.', 'guideme' )
 		);
 	
+		$capabilities = array(
+			'publish_posts'       => 'guideme_publish_posts',
+			'edit_posts'          => 'guideme_edit_posts',
+			'edit_others_posts'   => 'guideme_edit_others_posts',
+			'delete_posts'        => 'guideme_delete_posts',
+			'delete_others_posts' => 'guideme_delete_others_posts',
+			'read_private_posts'  => 'guideme_read_private_posts',
+			'edit_post'           => 'guideme_edit_post',
+			'delete_post'         => 'guideme_delete_post',
+			'read_post'           => 'guideme_read_post'
+		);		
+	
 		$args = array(
 			'labels'              => $labels,
 			'public'              => false,
@@ -321,6 +357,7 @@ class GuideMe {
 			'query_var'           => true,
 			'rewrite'             => array( 'slug' => 'guideme' ),
 			'capability_type'     => 'post',
+			'capabilities'        => $capabilities,
 			'has_archive'         => true,
 			'hierarchical'        => false,
 			'menu_position'       => 105,
@@ -346,7 +383,7 @@ class GuideMe {
 				__( 'Export', 'guideme' ),
 				'manage_options', 'guideme_export',
 				array( $this, 'export_page' )
-			);
+			);	
 	}
 	
 	function manage_guideme_columns( $column_name, $id ) {
